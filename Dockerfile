@@ -33,6 +33,36 @@ RUN pip3 install --upgrade pip;\
     pip3 install --upgrade paramiko;\
     pip3 cache purge
 
+# Install dependencies for building OpenSSL
+RUN microdnf install -y \
+    gcc \
+    make \
+    perl \
+    zlib1g-dev \
+    wget
+
+# Download and install OpenSSL
+RUN cd /tmp/ && \
+    wget https://www.openssl.org/source/openssl-3.2.1.tar.gz && \
+    tar -zxf openssl-3.2.1.tar.gz && \
+    cd openssl-3.2.1 && \
+    ./config --prefix=/usr/local/openssl --openssldir=/usr/local/openssl shared zlib && \
+    make && \
+    make install
+
+# Configure system to use the newly installed OpenSSL
+RUN echo "/usr/local/openssl/lib" > /etc/ld.so.conf.d/openssl-3.2.1.conf && \
+    ldconfig && \
+    echo 'export PATH="/usr/local/openssl/bin:$PATH"' >> /etc/profile && \
+    echo 'export LD_LIBRARY_PATH="/usr/local/openssl/lib:$LD_LIBRARY_PATH"' >> /etc/profile
+
+# Cleanup to reduce image size
+RUN microdnf clean && \
+    rm -rf /tmp/*
+
+# Verify OpenSSL installation
+RUN ["/bin/bash", "-c", "source /etc/profile && openssl version"]
+
 EXPOSE 3306
 
 CMD ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
