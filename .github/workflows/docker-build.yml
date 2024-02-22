@@ -43,6 +43,26 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
 
+
+      # Clair vulnerability scan
+      - name: Scan the Docker image with Clair
+        env:
+          IMAGE_NAME: freemankevin/nacos-mysql
+          IMAGE_TAG: v8
+        run: |
+          # Start Clair scanner
+          docker run -d --name clair-scanner -p 6060:6060 arminc/clair-scanner:latest
+          
+          # Wait for Clair scanner to start
+          sleep 10
+          
+          # Scan your Docker image with Clair
+          docker pull $IMAGE_NAME:$IMAGE_TAG
+          CLAIR_ADDR=http://localhost:6060 clair-scanner --ip "$(hostname -i)" -t High --report /tmp/clair-report.json $IMAGE_NAME:$IMAGE_TAG
+          
+          # Show the Clair scan report
+          cat /tmp/clair-report.json
+          
       - name: Logout from DockerHub
         if: always()
         run: docker logout
