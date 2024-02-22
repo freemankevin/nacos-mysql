@@ -33,6 +33,16 @@ jobs:
           build-args: |
             MYSQL_VERSION=8.3.0
 
+      # Trivy vulnerability scan
+      - name: Scan the Docker image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'freemankevin/nacos-mysql:v8'
+          format: 'table' # The format in which to display the results
+          exit-code: '1' # Set exit code to 1 if vulnerabilities are found
+          ignore-unfixed: true # Only fail for fixed vulnerabilities
+          vuln-type: 'os,library' # Scan for OS and library vulnerabilities
+
       - name: Logout from DockerHub
         if: always()
         run: docker logout
