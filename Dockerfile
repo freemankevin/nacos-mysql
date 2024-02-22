@@ -29,8 +29,8 @@ RUN set -eux; \
 
 # Python security library updates
 RUN pip3 install --upgrade pip;\
-    pip3 install --upgrade cryptography==42.0.4;\
-    pip3 install --upgrade paramiko==3.4.0;\
+    pip3 install --upgrade cryptography;\
+    pip3 install --upgrade paramiko;\
     pip3 cache purge
 
 EXPOSE 3306
