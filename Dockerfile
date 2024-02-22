@@ -38,7 +38,7 @@ RUN microdnf install -y \
     gcc \
     make \
     perl \
-    zlib1g-dev \
+    zlib-devel \
     wget
 
 # Download and install OpenSSL
