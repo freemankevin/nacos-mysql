@@ -5,6 +5,7 @@ ADD https://raw.githubusercontent.com/alibaba/nacos/develop/distribution/conf/my
 RUN chown -R mysql:mysql /docker-entrypoint-initdb.d/nacos-mysql.sql
 
 # Set up schema-related security repositories
+ENV releasever 8
 RUN set -eux; \
     arch="$(uname -m)"; \
     case "$arch" in \
