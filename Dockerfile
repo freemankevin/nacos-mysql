@@ -28,7 +28,8 @@ RUN set -eux; \
     microdnf clean all
 
 # Python security library updates
-RUN pip3 install --upgrade cryptography==42.0.2;\
+RUN pip3 install --upgrade pip;\
+    pip3 install --upgrade cryptography==42.0.2;\
     pip3 install --upgrade paramiko==3.4.0;\
     pip3 cache purge
 
